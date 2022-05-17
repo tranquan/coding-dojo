@@ -1,9 +1,14 @@
-from typing import List
 from datetime import datetime
+from typing import List
+
+'''
+Given an array of int and a a number, find 2 number in array has sum equal the input number
+'''
 
 
 class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
+    # On2
+    def twoSum1(self, nums: List[int], target: int) -> List[int]:
         for i in range(len(nums)):
             v = target - nums[i]
             for j in range(i+1, len(nums)):
@@ -11,6 +16,7 @@ class Solution:
                     return [i, j]
         return []
 
+    # On
     def twoSum2(self, nums: List[int], target: int) -> List[int]:
         complements = dict()
         for i in range(len(nums)):
