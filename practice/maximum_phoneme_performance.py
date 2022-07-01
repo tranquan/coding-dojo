@@ -1,4 +1,3 @@
-import warnings
 from logging import warning
 from typing import Dict, List
 
@@ -37,13 +36,31 @@ Dynamic programming: cache scores of previous length to calculate scores for the
 - Space complex: O(n)
 '''
 def calculate_maximum_phoneme_performance(scores: List[Score]) -> Dict[int, SequenceScore]:
+	n = len(scores)
 	result: Dict[int, SequenceScore] = {}
 	prev_length_scores: List[float] = []
 	
-	n = len(scores)
+	min_score = min(list(map(lambda x: x.score, scores)) + [0])
+	reached_min_score = False
 	for length in range(1, n+1):
+
+		# A. When we reach min_score: means previous length max_score = min_score
+		# [1] We won't able to find any sequence with larger score
+		# - Because the sub-sequence always have score >= its longer sequence
+		# - If there is a sequence with larger score, its sub-sequence should be catched in the previous check
+		# [2] The sequence should start from 0
+		# - Because we know there is no sequence can have a larger score based on [1]
+		# - We also know the max_score is min_score now, in other words, all sequence has the same score now
+		# - So it doesn't matter whether we take the first sequence or next, all has the same score
+		# Because if there is a 
+		if reached_min_score:
+			sequence = scores[0:length]
+			result[length] = SequenceScore(min_score, list(map(lambda x: x.phoneme, sequence)))
+			continue
+		
+		# B. Not reached min_score yet => calculate score for all sequences
 		cur_length_scores = []
-		max_score = 0
+		max_sequence_score = 0
 		sequence_start_i = 0
 
 		for s in range(0, n+1-length):
@@ -53,13 +70,15 @@ def calculate_maximum_phoneme_performance(scores: List[Score]) -> Dict[int, Sequ
 			score = min(scores[s+length-1].score, prev_score)
 			cur_length_scores.append(score)
 			
-			if score > max_score:
-				max_score = score
+			if score > max_sequence_score:
+				max_sequence_score = score
 				sequence_start_i = s
 
-		prev_length_scores = cur_length_scores
 		sequence = scores[sequence_start_i:sequence_start_i+length]
-		result[length] = SequenceScore(max_score, list(map(lambda x: x.phoneme, sequence)))
+		result[length] = SequenceScore(max_sequence_score, list(map(lambda x: x.phoneme, sequence)))
+
+		prev_length_scores = cur_length_scores
+		reached_min_score = max_sequence_score == min_score		
 
 	return result
 
