@@ -35,7 +35,7 @@ Dynamic programming: cache scores of previous length to calculate scores for the
 - Time complex: O(n^2)
 - Space complex: O(n)
 '''
-def calculate_maximum_phoneme_performance(scores: List[Score]) -> Dict[int, SequenceScore]:
+def calculate_maximum_phoneme_sequence(scores: List[Score]) -> Dict[int, SequenceScore]:
 	n = len(scores)
 	result: Dict[int, SequenceScore] = {}
 	prev_length_scores: List[float] = []
@@ -299,7 +299,7 @@ def test():
 	pass_count = 0
 	for test in TEST_CASES:
 		print(f'Test case: {test.input}')
-		result = calculate_maximum_phoneme_performance(test.input)
+		result = calculate_maximum_phoneme_sequence(test.input)
 		if TestCase.is_equal(result, test.expected):
 			pass_count += 1
 			print(f'-> Passed ✓\n')
